@@ -1,6 +1,6 @@
 from flask_socketio import SocketIO, emit
 from flask_cors import CORS
-from flask import Flask
+from flask import Flask, request
 
 app = Flask(__name__)
 #change this in prod
@@ -19,6 +19,13 @@ def reset():
     players = {'X': None, 'O': None}
     turn = 'X'
 
+
+socketio.on('create')
+def connect(x):
+    
+    print(f"Someone connected to websocket! xxxxxxxx{x}")
+    socketio.emit('createResponse', '/C1135974')
+
 @socketio.on('connect')
 def connect():
     print("Someone connected to websocket!")
@@ -26,13 +33,13 @@ def connect():
     if (players['X'] == None):
         print("It was player X!")
         players['X'] = request.sid
-        socketio.emit('x_or_o', 'X', room=players['X'])
-        socketio.emit('message', {"username":"System", "content":"You're playing as X"}, room=players['X'])
+        socketio.emit('x_or_o', 'X', room = players['X'])
+        socketio.emit('message', {"username":"System", "content":"You're playing as X"}, room = players['X'])
     elif (players['O'] == None) :
         print("It was player O!")
         players['O'] = request.sid
-        socketio.emit('x_or_o', 'O', room=players['O'])
-        socketio.emit('message', {"username":"System", "content":"You're playing as O"}, room=players['O'])
+        socketio.emit('x_or_o', 'O', room = players['O'])
+        socketio.emit('message', {"username":"System", "content":"You're playing as O"}, room = players['O'])
         socketio.emit('turn', 'X')
 
 @socketio.on('disconnect')
@@ -53,13 +60,14 @@ def message(object):
 
 @socketio.on('click')
 def click(object):
-    [i,j] = object.values()
+    #print(object)
+    i, j = object.values()
 
     if (players[turn] != request.sid):
         print("Wrong player clicked!")
         return
 
-    if players['X'] == None or players['O'] == None:
+    if players['X'] is None or players['O'] is None:
         print("Not enough players connected!")
         return
 
@@ -104,16 +112,16 @@ def updateLastPlayed(j):
     lastPlayed = -1 if wonBoards[j] != '' else j
 
 def boardWin(board):
-    lines = [
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8],
-    [0, 3, 6],
-    [1, 4, 7],
-    [2, 5, 8],
-    [0, 4, 8],
-    [2, 4, 6]
-    ]
+    lines = (
+    (0, 1, 2),
+    (3, 4, 5),
+    (6, 7, 8),
+    (0, 3, 6),
+    (1, 4, 7),
+    (2, 5, 8),
+    (0, 4, 8),
+    (2, 4, 6)
+    )
 
     for i in range(0, len(lines)):
         [a, b, c] = lines[i]

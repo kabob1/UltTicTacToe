@@ -91,6 +91,7 @@ class Game extends React.Component {
 
   handleClick(i, j) {
     //don't want to send data before usernames are entered
+    //console.log("testttttttttttt")
     if (this.state.show === false){
       this.props.socket.emit('click', {gid: this.props.gid, i: i, j: j });
     }

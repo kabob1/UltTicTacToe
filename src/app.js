@@ -12,7 +12,7 @@ import io from 'socket.io-client'
 //need to put these in a config file
 const port = '1337';
 //For remote games, change this to the ip of the host machine
-const ip = '9tactoe.whitestelephant.net';
+const ip = '10.0.0.172';
 const socket = io('http://' + ip + ':' + port);
 
 function GameWithID() {
@@ -89,7 +89,7 @@ class Main extends React.Component {
                     Create Game
                 </button>
                 <label>
-                    Insert game code
+                    Insert Game Code
                     <input value={this.state.gid} onChange={(evt) => this.updateGid(evt)} />
                 </label>
                 <button className="join" onClick={() => this.joinGame()}>
