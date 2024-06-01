@@ -12,9 +12,14 @@ import io from 'socket.io-client'
 //need to put these in a config file
 const port = '1337';
 //For remote games, change this to the ip of the host machine
-const ip = '10.0.0.172';
-const socket = io('http://' + ip + ':' + port);
+const ipAddress = '10.0.0.172';
+const socket = io('http://' + ipAddress + ':' + port);
 
+io.on("connection", (socket) => {
+    const ipAddress = socket.handshake.address;
+  
+    console.log(ipAddress); // prints something like "203.0.113.195" (IPv4) or "2001:db8:85a3:8d3:1319:8a2e:370:7348" (IPv6)
+  });
 function GameWithID() {
     let { gid } = useParams();
 
@@ -32,6 +37,7 @@ class App extends React.Component {
         super(props)
 
         socket.on('createResponse', createResponse => {
+            console.log(createResponse)
             if (createResponse === "failure") {
                 return (null);
             } else {
@@ -94,6 +100,9 @@ class Main extends React.Component {
                 </label>
                 <button className="join" onClick={() => this.joinGame()}>
                     Join Game
+                </button>
+                <button className="local" onClick={() => this.createGame()}>
+                    Local Game 
                 </button>
             </div>
         )

@@ -1,6 +1,8 @@
 from flask_socketio import SocketIO, emit
 from flask_cors import CORS
 from flask import Flask, request
+import random
+import string
 
 app = Flask(__name__)
 #change this in prod
@@ -20,16 +22,25 @@ def reset():
     turn = 'X'
 
 
-socketio.on('create')
+
+def get_random_string(length):
+    # choose from all lowercase letter
+    letters = string.ascii_lowercase
+    result_str = ''.join(random.choice(letters) for i in range(length))
+    print("Random string of length", length, "is:", result_str)
+
+
+
+
+@socketio.on("create")
 def connect(x):
-    
-    print(f"Someone connected to websocket! xxxxxxxx{x}")
-    socketio.emit('createResponse', '/C1135974')
+    print(x)
+    print(f"Someone connected to websocket! 23")
+    socketio.emit('createResponse', '/22xxxx')
 
 @socketio.on('connect')
-def connect():
+def connect(): 
     print("Someone connected to websocket!")
-
     if (players['X'] == None):
         print("It was player X!")
         players['X'] = request.sid
@@ -60,8 +71,8 @@ def message(object):
 
 @socketio.on('click')
 def click(object):
-    #print(object)
-    i, j = object.values()
+    print(object)
+    i, j = object['i'], object['j']
 
     if (players[turn] != request.sid):
         print("Wrong player clicked!")
