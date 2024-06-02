@@ -6,8 +6,8 @@ import {
     Route,
     useParams
 } from "react-router-dom";
-import SocketContext from './socket-context'
-import io from 'socket.io-client'
+import SocketContext from './socket-context';
+import { io } from 'socket.io-client';
 
 //need to put these in a config file
 const port = '1337';
@@ -15,7 +15,7 @@ const port = '1337';
 const ipAddress = '10.0.0.172';
 const socket = io('http://' + ipAddress + ':' + port);
 
-io.on("connection", (socket) => {
+socket.on("connection", (socket) => {
     const ipAddress = socket.handshake.address;
   
     console.log(ipAddress); // prints something like "203.0.113.195" (IPv4) or "2001:db8:85a3:8d3:1319:8a2e:370:7348" (IPv6)
