@@ -115,21 +115,29 @@ def click(object):
     #socketio.emit('boards', boards)
     #socketio.emit('wonboards', wonBoards)
     #socketio.emit('lastPlayed', lastPlayed)
-
-    if (boardWin(wonBoards) != ""):
-        socketio.emit('victory',boardWin(wonBoards))
-        reset()
-
-    #Toggle the player
-    togglePlayer()
-    #socketio.emit('turn', turn)
     gamestate = {
             "boards": boards,
             "wonBoards": wonBoards,
             "lastPlayed": lastPlayed,
             "turn": turn,
         }
-    emit('start_game', gamestate)
+    
+    emit('state', gamestate)
+    if (boardWin(wonBoards) != ""):
+        socketio.emit('victory',boardWin(wonBoards))
+        reset()
+
+    #Toggle the player
+    togglePlayer()
+    gamestate = {
+            "boards": boards,
+            "wonBoards": wonBoards,
+            "lastPlayed": lastPlayed,
+            "turn": turn,
+        }
+    
+    emit('state', gamestate)
+    socketio.emit('role', turn)
 
 def togglePlayer():
     global turn

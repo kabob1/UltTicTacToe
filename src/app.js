@@ -12,7 +12,7 @@ import io from 'socket.io-client'
 //need to put these in a config file
 const port = '1337';
 //For remote games, change this to the ip of the host machine
-const ip = '192.168.12.124';
+const ip = '10.0.0.172';
 const socket = io('http://' + ip + ':' + port);
 
 function GameWithID() {
