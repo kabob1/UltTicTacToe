@@ -135,8 +135,8 @@ def click(object):
             "lastPlayed": lastPlayed,
             "turn": turn,
         }
-    
-    emit('state', gamestate)
+    socketio.emit('state', gamestate)
+
     socketio.emit('role', turn)
 
 def togglePlayer():
