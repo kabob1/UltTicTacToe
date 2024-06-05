@@ -28,15 +28,17 @@ def get_random_string(length):
     letters = string.ascii_lowercase
     result_str = ''.join(random.choice(letters) for i in range(length))
     print("Random string of length", length, "is:", result_str)
+    return result_str
 
 
 
 
 @socketio.on("create")
 def connect(x):
-    print(x)
-    print(f"Someone connected to websocket! 23")
-    socketio.emit('createResponse', '/22xxxx')
+    print(players['X'])
+    print(f"Someone connected to websocket! 239{x}")
+    socketio.emit('createResponse', get_random_string(3))
+        
 
 @socketio.on('connect')
 def connect(): 
@@ -44,14 +46,28 @@ def connect():
     if (players['X'] == None):
         print("It was player X!")
         players['X'] = request.sid
+        emit('joinResponse', True)
         socketio.emit('x_or_o', 'X', room = players['X'])
         socketio.emit('message', {"username":"System", "content":"You're playing as X"}, room = players['X'])
     elif (players['O'] == None) :
         print("It was player O!")
         players['O'] = request.sid
+        emit('joinResponse', True)
         socketio.emit('x_or_o', 'O', room = players['O'])
         socketio.emit('message', {"username":"System", "content":"You're playing as O"}, room = players['O'])
         socketio.emit('turn', 'X')
+    print(players)
+    if (players['X'] != None and players['O'] != None):
+        gamestate = {
+            "boards": boards,
+            "wonBoards": wonBoards,
+            "lastPlayed": lastPlayed,
+            "turn": turn,
+        }
+        emit('start_game', gamestate)
+        
+
+
 
 @socketio.on('disconnect')
 def disconnect():
@@ -96,9 +112,9 @@ def click(object):
     #check if the next board to play on is won
     updateLastPlayed(j)
 
-    socketio.emit('boards', boards)
-    socketio.emit('wonboards', wonBoards)
-    socketio.emit('lastPlayed', lastPlayed)
+    #socketio.emit('boards', boards)
+    #socketio.emit('wonboards', wonBoards)
+    #socketio.emit('lastPlayed', lastPlayed)
 
     if (boardWin(wonBoards) != ""):
         socketio.emit('victory',boardWin(wonBoards))
@@ -106,7 +122,14 @@ def click(object):
 
     #Toggle the player
     togglePlayer()
-    socketio.emit('turn', turn)
+    #socketio.emit('turn', turn)
+    gamestate = {
+            "boards": boards,
+            "wonBoards": wonBoards,
+            "lastPlayed": lastPlayed,
+            "turn": turn,
+        }
+    emit('start_game', gamestate)
 
 def togglePlayer():
     global turn

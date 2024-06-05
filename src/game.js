@@ -22,6 +22,7 @@ class Game extends React.Component {
     this.hideModal = this.hideModal.bind(this);
 
     this.props.socket.on('joinResponse', response => {
+      console.log(response)
       if (response === true) {
         this.setState({status: "Connected to game. Waiting for another player..." })
         this.showModal()
